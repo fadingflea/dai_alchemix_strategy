@@ -6,8 +6,8 @@ Strategy to deposit DAI in Alchemix, borrow alUSD &amp; deposit in Curve Pool an
 
 1. Deposits DAI in Alchemix V2
 2. Mints alUSD from Alchemix V2
-3. Deposits alUSD in the alUSD pool.
-4. Deposits Curve LP Token to Yearn's Curve alUSD vault.
+3. Deposits alUSD in the [Curve Factory USD Metapool alUSD3CRV](https://etherscan.io/address/0x43b4fdfd4ff969587185cdb6f0bd875c5fc83f8c).
+5. Deposits Curve LP Token to [Yearn's Curve alUSD vault](https://yearn.finance/#/vault/0xA74d4B67b3368E83797a35382AFB776bAAE4F5C8).
 
 ### How to test it in your local blockchain
 
