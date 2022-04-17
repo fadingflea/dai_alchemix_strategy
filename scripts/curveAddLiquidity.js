@@ -23,17 +23,17 @@ async function main() {
 
     const alUSDHolder = await ethers.getSigner(alUSDHolderAddress);
 
-    const alUSTokenAddress = "0xBC6DA0FE9aD5f3b0d58160288917AA56653660E9";
+    const alUSDTokenAddress = "0xBC6DA0FE9aD5f3b0d58160288917AA56653660E9";
     const poolAddress = "0x43b4FdFD4Ff969587185cDB6f0BD875c5Fc83f8c";
 
-    // DAI Contract
+    // AlUSD Contract
     const alUSDAbi = [
       "event Approval(address indexed owner, address indexed spender, uint256 value)",
       "function approve(address spender, uint256 amount) external returns (bool)",
       "function balanceOf(address account) external view returns (uint256)",
       "function transfer(address to, uint256 amount) external returns (bool)"
     ];
-    const alUSDContract = new ethers.Contract(alUSTokenAddress, alUSDAbi, alUSDHolder);
+    const alUSDContract = new ethers.Contract(alUSDTokenAddress, alUSDAbi, alUSDHolder);
 
     // await contract.curveAddLiquidity("0x43b4FdFD4Ff969587185cDB6f0BD875c5Fc83f8c", "0xBC6DA0FE9aD5f3b0d58160288917AA56653660E9");
 

@@ -22,6 +22,13 @@ async function main() {
 
     const daiHolder = await ethers.getSigner(daiHolderAddress);
 
+    // YVault Contract
+    const yVaultAddress = "0xA74d4B67b3368E83797a35382AFB776bAAE4F5C8";
+    const yVaultAbi = [
+      "function balanceOf(address account) external view returns (uint256)",
+    ];
+    const yVaultContract = new ethers.Contract(yVaultAddress, yVaultAbi, daiHolder);
+
     const collateralValue = 5000;
     const targetDebt = collateralValue / 4;
 
@@ -31,8 +38,10 @@ async function main() {
 
     try {
       await daiAlchemixStrategy.connect(daiHolder).executeOperation(collateralValue, targetDebt);
-      const LPbalance = await daiAlchemixStrategy.contractLPTokenBalance(); 
-      console.log("Address LP balance:", LPbalance.toString())
+      const yVaultbalance = await yVaultContract.balanceOf(daiHolder.address); 
+      console.log("Address yvToken balance:", yVaultbalance.toString())
+      // const LPbalance = await daiAlchemixStrategy.contractLPTokenBalance(); 
+      // console.log("Address LP balance:", LPbalance.toString())
     } catch (error) {
       console.log(error)
     }

@@ -5,6 +5,7 @@ import "../interfaces/IWhitelist.sol";
 import "../interfaces/IERC20.sol";
 import "../interfaces/IAlchemistV2.sol";
 import "../interfaces/ICurveMetapool.sol";
+import "../interfaces/IYearnVault.sol";
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 
@@ -13,6 +14,8 @@ contract DaiAlchemixStrategy is Ownable {
         IWhitelist(0x78537a6CeBa16f412E123a90472C6E0e9A8F1132);
 
     address CURVE_METAPOOL_ADDRESS = 0x43b4FdFD4Ff969587185cDB6f0BD875c5Fc83f8c;
+
+    address YEARN_VAULT_ADDRESS = 0xA74d4B67b3368E83797a35382AFB776bAAE4F5C8;
 
     address ALCHEMIST_ADDRESS = 0x5C6374a2ac4EBC38DeA0Fc1F8716e5Ea1AdD94dd;
 
@@ -101,13 +104,11 @@ contract DaiAlchemixStrategy is Ownable {
         // Deposit into Curve's pool
         address debtToken = IAlchemistV2(ALCHEMIST_ADDRESS).debtToken();
 
-        uint256 crvLPAmount = curveAddLiquidity(
-            CURVE_METAPOOL_ADDRESS,
-            debtToken
-        );
+        curveAddLiquidity(CURVE_METAPOOL_ADDRESS, debtToken);
 
-        // Send funds back to recipient
-        // _transferTokensToRecipient(underlyingToken, amountOut, finalRecipient);
+        // Deposit into Yearn Vault
+
+        yearnVaultDeposit(YEARN_VAULT_ADDRESS, CURVE_METAPOOL_ADDRESS);
 
         return true;
     }
@@ -166,6 +167,19 @@ contract DaiAlchemixStrategy is Ownable {
                 [debtTokenBalance, 0],
                 minLPTokens
             );
+    }
+
+    /// @notice Add Liquidity on curve using the supplied params
+    /// @param vaultAddress Yearn vault address
+    /// @param curveLPToken The curve LP Token
+    function yearnVaultDeposit(address vaultAddress, address curveLPToken)
+        public
+        returns (uint256 amountOut)
+    {
+        uint256 LPTokenBalance = IERC20(curveLPToken).balanceOf(address(this));
+        approve(curveLPToken, vaultAddress);
+
+        return IYearnVault(vaultAddress).deposit(LPTokenBalance, msg.sender);
     }
 
     // ONLY OWNER SET PARAMS
