@@ -3,7 +3,7 @@ require("hardhat-gas-reporter");
 require("@nomiclabs/hardhat-etherscan");
 require('dotenv').config()
 
-const { ALCHEMY_API_KEY, MORALIS_API_KEY, DEPLOYER_MNEMONIC, ETHERSCAN_API_KEY, COIN_MARKET_CAP_KEY } = process.env;
+const { ALCHEMY_API_KEY, DEPLOYER_MNEMONIC, ETHERSCAN_API_KEY, COIN_MARKET_CAP_KEY } = process.env;
 
 module.exports = {
   solidity: "0.8.11",
