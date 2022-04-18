@@ -199,31 +199,4 @@ contract DaiAlchemixStrategy is Ownable {
 
         yieldTokenAddress = newYieldTokenAddress;
     }
-
-    /// Extra functions for testing
-
-    function ERC20UnderlyingBalanceOf() public view returns (uint256) {
-        address recipient = msg.sender;
-        address underlyingToken = getUnderlyingToken();
-
-        uint256 balance = IERC20(underlyingToken).balanceOf(recipient);
-
-        return balance;
-    }
-
-    function contractDebtTokenBalance() public view returns (uint256) {
-        address debtToken = IAlchemistV2(ALCHEMIST_ADDRESS).debtToken();
-
-        uint256 balance = IERC20(debtToken).balanceOf(address(this));
-
-        return balance;
-    }
-
-    function contractLPTokenBalance() public view returns (uint256) {
-        uint256 balance = IERC20(CURVE_METAPOOL_ADDRESS).balanceOf(
-            address(this)
-        );
-
-        return balance;
-    }
 }
