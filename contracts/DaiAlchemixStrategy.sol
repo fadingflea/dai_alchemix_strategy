@@ -80,6 +80,11 @@ contract DaiAlchemixStrategy is Ownable {
 
         _transferTokensToSelf(underlyingToken, collateralValue);
 
+        require(
+            IERC20(underlyingToken).balanceOf(address(this)) >= 0,
+            "Contract has not enough balance of underlying Token to deposit in Alchemix"
+        );
+
         // Deposit into Alchemix recipient's account
         approve(underlyingToken, ALCHEMIST_ADDRESS);
 
@@ -129,24 +134,6 @@ contract DaiAlchemixStrategy is Ownable {
         );
     }
 
-    /// @notice Either convert received eth to weth, or transfer ERC20 from the msg.sender to this contract
-    /// @param underlyingToken The ERC20 desired to transfer
-    /// @param swapAmount The amount of tokens after swap
-    /// @param recipient Address that will receive the final tokens
-
-    function _transferTokensToRecipient(
-        address underlyingToken,
-        uint256 swapAmount,
-        address recipient
-    ) internal {
-        if (msg.value > 0) revert IllegalArgument("msg.value should be 0");
-        IERC20(underlyingToken).transferFrom(
-            address(this),
-            recipient,
-            swapAmount
-        );
-    }
-
     /// @notice Add Liquidity on curve using the supplied params
     /// @param poolAddress Curve pool address
     /// @param debtToken The alAsset debt token address
@@ -155,6 +142,12 @@ contract DaiAlchemixStrategy is Ownable {
         returns (uint256 amountOut)
     {
         uint256 debtTokenBalance = IERC20(debtToken).balanceOf(address(this));
+
+        require(
+            debtTokenBalance > 0,
+            "Curve Add Liquidity: Contract has no balance"
+        );
+
         approve(debtToken, poolAddress);
 
         uint256 minLPTokens = (ICurveMetapool(poolAddress).calc_token_amount(
@@ -177,6 +170,11 @@ contract DaiAlchemixStrategy is Ownable {
         returns (uint256 amountOut)
     {
         uint256 LPTokenBalance = IERC20(curveLPToken).balanceOf(address(this));
+
+        require(
+            LPTokenBalance > 0,
+            "Yearn Vault Deposit: Contract has no balance"
+        );
         approve(curveLPToken, vaultAddress);
 
         return IYearnVault(vaultAddress).deposit(LPTokenBalance, msg.sender);
